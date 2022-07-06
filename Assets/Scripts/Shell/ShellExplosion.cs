@@ -28,6 +28,11 @@ public class ShellExplosion : MonoBehaviour
             var targetRigidbody = colliders[i].GetComponent<Rigidbody>();
             if (targetRigidbody == null) continue;
 
+            // detect whether player or enemy was hit
+            var miniMapCamera = colliders[i].GetComponentInChildren<Camera>();
+            if (miniMapCamera == null) Debug.Log("enemy hit");
+            else Debug.Log("player hit");
+
             targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);
 
             var targetHealth = targetRigidbody.GetComponent<TankHealth>();

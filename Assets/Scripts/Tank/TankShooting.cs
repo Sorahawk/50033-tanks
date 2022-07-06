@@ -36,6 +36,9 @@ public class TankShooting : MonoBehaviour
 
     private void Update()
     {
+        // prevent charging arrow from showing up if next shell can't be fired yet
+        if (Time.time <= nextFireTime) return;
+
         m_AimSlider.value = m_MinLaunchForce;
 
         if (m_CurrentLaunchForce >= m_MaxLaunchForce && !m_Fired)
