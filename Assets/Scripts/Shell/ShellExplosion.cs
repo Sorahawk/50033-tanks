@@ -4,12 +4,15 @@ public class ShellExplosion : MonoBehaviour
 {
 
     public LayerMask m_TankMask;
-    public ParticleSystem m_ExplosionParticles;       
-    public AudioSource m_ExplosionAudio;              
-    public float m_MaxDamage = 100f;                  
-    public float m_ExplosionForce = 1000f;            
-    public float m_MaxLifeTime = 2f;                  
-    public float m_ExplosionRadius = 5f;              
+    public ParticleSystem m_ExplosionParticles;
+    public AudioSource m_ExplosionAudio;
+    public float m_MaxDamage = 100f;
+    public float m_ExplosionForce = 1000f;
+    public float m_MaxLifeTime = 2f;
+    public float m_ExplosionRadius = 5f;
+
+    public AudioClip m_EnemyHitAudio;
+    public AudioClip m_PlayerHitAudio;
 
 
     private void Start()
@@ -28,10 +31,18 @@ public class ShellExplosion : MonoBehaviour
             var targetRigidbody = colliders[i].GetComponent<Rigidbody>();
             if (targetRigidbody == null) continue;
 
-            // detect whether player or enemy was hit
+            // detect whether player or enemy using presence of MiniMapCamera
             var miniMapCamera = colliders[i].GetComponentInChildren<Camera>();
-            if (miniMapCamera == null) Debug.Log("enemy hit");
-            else Debug.Log("player hit");
+
+            // enemy hit
+            if (miniMapCamera == null) {
+                m_ExplosionAudio.PlayOneShot(m_EnemyHitAudio, 0.25F);
+            }
+
+            // player hit
+            else {
+                m_ExplosionAudio.PlayOneShot(m_PlayerHitAudio, 0.25F);
+            }
 
             targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);
 
