@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
 
         m_MessageText.text = string.Empty;
 
-        while (!OneTankLeft()) yield return null;
+        while (!OneTankLeft() && !PlayerDead()) yield return null;
     }
 
 
@@ -129,14 +129,45 @@ public class GameManager : MonoBehaviour
         return numTanksLeft <= 1;
     }
 
-    private TankManager GetRoundWinner()
+
+    private bool PlayerDead()
     {
         for (int i = 0; i < m_Tanks.Length; i++)
         {
-            if (m_Tanks[i].m_Instance.activeSelf)
-                return m_Tanks[i];
+            var currTank = m_Tanks[i].m_Instance;
+
+            // if player is dead
+            if (currTank.GetComponentInChildren<Camera>() != null && !currTank.activeSelf) {
+                return true;
+            }
         }
 
+        return false;
+    }
+
+
+    private TankManager GetRoundWinner()
+    {
+        // if both enemies still alive, randomly take either first or second as winner
+        int randomWinner = Random.Range(0, 2);
+ 
+        TankManager firstTank = null;
+
+        for (int i = 0; i < m_Tanks.Length; i++)
+        {
+            if (m_Tanks[i].m_Instance.activeSelf)
+            {
+                if (randomWinner == 0) return m_Tanks[i];
+
+                else
+                {
+                    // have to account for the case where really only one tank is left
+                    firstTank = m_Tanks[i];
+                }
+            }
+        }
+
+        if (firstTank != null) return firstTank;
         return null;
     }
 
